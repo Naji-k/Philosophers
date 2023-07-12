@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	:= philo
-CFLAGS	:= -Wall -Wextra -Werror #-g -fsanitize=address,undefined
+CFLAGS	:= -Wall -Wextra -Werror -g -fsanitize=address,undefined
 
 #Directories
 OBJ_DIR	:= obj
@@ -24,7 +24,7 @@ all	:	$(NAME)
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) $(HEADERS) -o $< -c $<
+	@$(CC) $(CFLAGS) $(HEADERS) -o $@ -c $<
 
 $(NAME):	$(OBJS)
 	@$(CC) $(CFLAGS) $(HEADERS) $(OBJS) -o $(NAME)
