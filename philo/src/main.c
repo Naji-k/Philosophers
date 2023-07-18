@@ -34,6 +34,47 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
+void	pickup_forks(t_philo *philo)
+{
+	pthread_mutex_lock(philo->r_fork);
+	pthread_mutex_lock(philo->l_fork);
+	pthread_mutex_lock(&philo->data->print);
+	printf("Philo %d has taken fork\n", philo->id);
+	pthread_mutex_unlock(&philo->data->print);
+}
+
+void	eat(t_philo *philo)
+{
+	philo->status = EAT;
+	pthread_mutex_lock(&philo->data->print);
+	printf("Philo %d is eating \n", philo->id);
+	pthread_mutex_unlock(&philo->data->print);
+	usleep(philo->data->eat_time * 1000);
+}
+
+void	putdown_forks(t_philo *philo)
+{
+	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
+}
+
+void	philo_sleep(t_philo *philo)
+{
+	philo->status = SLEEP;
+	pthread_mutex_lock(&philo->data->print);
+	printf("Philo %d is sleeping \n", philo->id);
+	pthread_mutex_unlock(&philo->data->print);
+	usleep(philo->data->sleep_time * 1000);
+}
+
+void	philo_think(t_philo *philo)
+{
+	philo->status = THINK;
+	pthread_mutex_lock(&philo->data->print);
+	printf("Philo %d is thinking \n", philo->id);
+	pthread_mutex_unlock(&philo->data->print);
+}
+
 void	init_mutex(t_data *data)
 {
 	int	i;

@@ -17,12 +17,11 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/time.h>
 # include <time.h>
 # include <unistd.h>
-#include <sys/time.h>
 
-
-struct	s_data;
+struct s_data;
 
 typedef enum s_ph_status
 {
@@ -62,6 +61,11 @@ typedef struct s_data
 int					check_inputs(int argc, char **argv);
 long				ft_atoi(const char *str);
 
+void				pickup_forks(t_philo *philo);
+void				eat(t_philo *philo);
+void				putdown_forks(t_philo *philo);
+void				philo_sleep(t_philo *philo);
+void				philo_think(t_philo *philo);
 //init
 int					allocate_memory(t_data *data);
 void				init(t_data *data, char **argv);
@@ -72,3 +76,11 @@ int					init_forks(t_data *data);
 void				free_all(t_data *data);
 
 #endif
+
+/* 
+◦ timestamp_in_ms X has taken a fork
+◦ timestamp_in_ms X is eating
+◦ timestamp_in_ms X is sleeping
+◦ timestamp_in_ms X is thinking
+◦ timestamp_in_ms X died
+ */
