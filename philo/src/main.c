@@ -18,7 +18,7 @@ void	print_inputs(t_data *data)
 	printf("time_to_die= %llu\n", data->death_time);
 	printf("time_to_eat= %llu\n", data->eat_time);
 	printf("time_to_sleep= %llu\n", data->sleep_time);
-	printf("num_of_meals= %d\n", data->meals_nb);
+	printf("num_of_meals= %d\n", data->must_eat);
 }
 
 //just default func it's not correct
@@ -27,9 +27,18 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	for (int i = 0; i < 10; i++)
+	while (1)
 	{
-		philo->eating++;
+		if (philo->id % 2 == 0)
+		{
+			usleep(200);
+			philo_think(philo);
+			eat(philo);
+			philo_sleep(philo);
+		}
+		eat(philo);
+		philo_sleep(philo);
+		philo_think(philo);
 	}
 	return (NULL);
 }
@@ -37,19 +46,22 @@ void	*routine(void *arg)
 void	pickup_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->r_fork);
+	print_msg(philo, T_FORK);
 	pthread_mutex_lock(philo->l_fork);
-	pthread_mutex_lock(&philo->data->print);
-	printf("Philo %d has taken fork\n", philo->id);
-	pthread_mutex_unlock(&philo->data->print);
+	print_msg(philo, T_FORK);
 }
 
 void	eat(t_philo *philo)
 {
+	pickup_forks(philo);
 	philo->status = EAT;
-	pthread_mutex_lock(&philo->data->print);
-	printf("Philo %d is eating \n", philo->id);
-	pthread_mutex_unlock(&philo->data->print);
-	usleep(philo->data->eat_time * 1000);
+	pthread_mutex_lock(&philo->data->mutex_meal);
+	// philo->meal_count--;
+	philo->last_meal_time = current_time();
+	pthread_mutex_unlock(&philo->data->mutex_meal);
+	print_msg(philo, EATING);
+	ft_sleep(philo->data->eat_time);
+	putdown_forks(philo);
 }
 
 void	putdown_forks(t_philo *philo)
@@ -61,60 +73,75 @@ void	putdown_forks(t_philo *philo)
 void	philo_sleep(t_philo *philo)
 {
 	philo->status = SLEEP;
-	pthread_mutex_lock(&philo->data->print);
-	printf("Philo %d is sleeping \n", philo->id);
-	pthread_mutex_unlock(&philo->data->print);
-	usleep(philo->data->sleep_time * 1000);
+	print_msg(philo, SLEEPING);
+	ft_sleep(philo->data->sleep_time);
 }
 
 void	philo_think(t_philo *philo)
 {
 	philo->status = THINK;
-	pthread_mutex_lock(&philo->data->print);
-	printf("Philo %d is thinking \n", philo->id);
-	pthread_mutex_unlock(&philo->data->print);
+	print_msg(philo, THINKING);
 }
-
-void	init_mutex(t_data *data)
+bool	thread_checker(t_data *data)
 {
-	int	i;
-
-	i = 0;
-	while (i < data->nb_philo)
-	{
-		pthread_mutex_init(&data->forks[i], NULL);
-		i++;
-	}
-}
-
-void	destroy_mutex(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->nb_philo)
-	{
-		pthread_mutex_destroy(&data->forks[i]);
-		i++;
-	}
+	if (data->created_threads != data->nb_philo)
+		return (false);
+	return (true);
 }
 int	create_threads(t_data *data)
 {
 	int	i;
 
 	i = 0;
+	pthread_mutex_lock(&data->create);
+	data->start_time = current_time();
 	while (i < data->nb_philo)
 	{
 		if (pthread_create(&data->thread_id[i], NULL, &routine,
 				(void *)&data->philos[i]))
-			return (1);
+			break ;
 		i++;
 	}
+	if (thread_checker(data) == false)
+		return (1);
+	pthread_mutex_unlock(&data->create);
+	if (ft_monitor(data) == 1)
+		destroy_free_all(data);
+	return (0);
+}
+
+int	join_thread(t_data *data)
+{
+	int	i;
+
 	i = 0;
-	while (i < data->nb_philo)
+	while (i > data->nb_philo)
 	{
 		if (pthread_join(data->thread_id[i], NULL))
 			return (1);
+		i++;
+	}
+	return (0);
+}
+int	ft_monitor(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		if (data->philos[i].last_meal_time >= data->start_time
+			+ data->death_time)
+		{
+			print_msg(&data->philos[i], DIED);
+			data->philos[i].status = DIE;
+			return (1);
+		}
+		if (data->philos[i].meal_count == 0)
+		{
+			printf("finish\n");
+			return (1);
+		}
 		i++;
 	}
 	return (0);
@@ -125,20 +152,22 @@ int	main(int argc, char **argv)
 	t_data	data;
 
 	printf("number of argc=%d\n", argc);
-	if (argc > 4)
+	if (argc < 5 || check_inputs(argc, argv, &data) == false)
 	{
-		if (check_inputs(argc, argv) == 0)
-		{
-			printf("========\n");
-			init(&data, argv);
-			print_inputs(&data);
-			create_threads(&data);
-			printf("nb_of_meals=%d\n", data.meals_nb);
-			free_all(&data);
-		}
+		printf("invalid inputs\n");
+		return (1);
 	}
 	else
-		printf("invalid inputs\n");
+	{
+		printf("========\n");
+		if (init(&data) == 1)
+			return (1);
+		print_inputs(&data);
+		create_threads(&data);
+		join_thread(&data);
+		// destroy_free_all(&data);
+	}
+	return (0);
 }
 
 /* 

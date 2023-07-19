@@ -12,20 +12,21 @@
 
 #include "philosophers.h"
 
-void	init(t_data *data, char **argv)
+int	init(t_data *data)
 {
-	data->nb_philo = ft_atoi(argv[1]);
-	data->death_time = ft_atoi(argv[2]);
-	data->eat_time = ft_atoi(argv[3]);
-	data->sleep_time = ft_atoi(argv[4]);
-	if (argv[5] != NULL)
-		data->meals_nb = ft_atoi(argv[5]);
-	else
-		data->meals_nb = -1;
 	if (allocate_memory(data))
+	{
 		printf("error allocate\n");
+		return (1);
+	}
+	if (init_mutex(data))
+	{
+		printf("error init_mutexes\n");
+		return (1);
+	}
 	init_philo(data);
 	init_forks(data);
+	return (0);
 }
 
 int	allocate_memory(t_data *data)
@@ -51,24 +52,27 @@ int	allocate_memory(t_data *data)
 	return (0);
 }
 
-int	init_philo(t_data *data)
+void	init_philo(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->nb_philo)
 	{
+		if (data->must_eat != -1)
+			data->philos[i].meal_count = data->must_eat;
+		else
+			data->philos[i].meal_count = -1;
 		data->philos[i].data = data;
 		data->philos[i].id = i + 1;
 		i++;
 	}
-	return (0);
 }
 
 //this function to initialize forks for each philosopher ex: L_fork, R_fork
-int	init_forks(t_data *data)
+void	init_forks(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->nb_philo)
@@ -82,5 +86,39 @@ int	init_forks(t_data *data)
 		data->philos[i].r_fork = &data->forks[i - 1];
 		i++;
 	}
-	return (0);
+}
+
+bool	init_mutex(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		if (!pthread_mutex_init(&data->forks[i], NULL))
+			return (false);
+		i++;
+	}
+	if (!pthread_mutex_init(&data->mutex_meal, NULL))
+		return (false);
+	if (!pthread_mutex_init(&data->print, NULL))
+		return (false);
+	if (!pthread_mutex_init(&data->create, NULL))
+		return (false);
+	return (true);
+}
+
+void	destroy_mutex(t_data *data)
+{
+	int i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->mutex_meal);
+	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->create);
 }

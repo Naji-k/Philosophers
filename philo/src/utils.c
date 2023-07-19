@@ -12,20 +12,40 @@
 
 #include "philosophers.h"
 
-void	free_all(t_data *data)
+void	destroy_free_all(t_data *data)
 {
-	free(data->thread_id);
-	free(data->philos);
-	free(data->forks);
+	if (data->thread_id)
+		free(data->thread_id);
+	if (data->philos)
+		free(data->philos);
+	if (data->forks)
+		free(data->forks);
+	destroy_mutex(data);
 }
 
-u_int64_t	current_time(t_data *data)
+long long	current_time(void)
 {
-	struct timeval start_time;
-	u_int64_t start_t;
+	struct timeval	start_time;
 
 	gettimeofday(&start_time, NULL);
-	start_t = (start_time.tv_sec * 1000) + (start_time.tv_usec / 1000);
-	data->start_time = start_t;
-	return (start_t);
+	return (start_time.tv_sec * 1000LL) + (start_time.tv_usec / 1000LL);
+}
+
+void	ft_sleep(long long time)
+{
+	long long	check;
+
+	check = current_time();
+	while (current_time() < check + time)
+		usleep(30);
+}
+
+void	print_msg(t_philo *philo, char *msg)
+{
+	long long p_time;
+
+	pthread_mutex_lock(&philo->data->print);
+	p_time = current_time() - philo->data->start_time;
+	printf("%lld %d %s\n", p_time, philo->id, msg);
+	pthread_mutex_unlock(&philo->data->print);
 }
