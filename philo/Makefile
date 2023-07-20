@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	:= philo
-CFLAGS	:= -Wall -Wextra -Werror -g -fsanitize=address,undefined
+CFLAGS	:= -Wall -Wextra -Werror #-g -fsanitize=address,undefined
 
 #Directories
 OBJ_DIR	:= obj
@@ -36,7 +36,7 @@ clean :
 
 fclean : clean
 	rm -rf $(NAME)
-	@printf "Removed ./minishell executable successfully.\n"
+	@printf "Removed $(NAME) executable successfully.\n"
 
 re : fclean all
 

@@ -28,7 +28,7 @@ long long	current_time(void)
 	struct timeval	start_time;
 
 	gettimeofday(&start_time, NULL);
-	return (start_time.tv_sec * 1000LL) + (start_time.tv_usec / 1000LL);
+	return (start_time.tv_sec * 1000) + (start_time.tv_usec / 1000);
 }
 
 void	ft_sleep(long long time)
@@ -37,7 +37,7 @@ void	ft_sleep(long long time)
 
 	check = current_time();
 	while (current_time() < check + time)
-		usleep(30);
+		usleep(300);
 }
 
 void	print_msg(t_philo *philo, char *msg)

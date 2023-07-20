@@ -19,7 +19,7 @@ int	init(t_data *data)
 		printf("error allocate\n");
 		return (1);
 	}
-	if (init_mutex(data))
+	if (!init_mutex(data))
 	{
 		printf("error init_mutexes\n");
 		return (1);
@@ -41,12 +41,15 @@ int	allocate_memory(t_data *data)
 	if (!data->philos)
 	{
 		printf("Error malloc philo\n");
+		free(data->thread_id);
 		return (1);
 	}
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
 	if (!data->forks)
 	{
 		printf("Error malloc forks\n");
+		free(data->thread_id);
+		free(data->philos);
 		return (1);
 	}
 	return (0);
@@ -65,6 +68,8 @@ void	init_philo(t_data *data)
 			data->philos[i].meal_count = -1;
 		data->philos[i].data = data;
 		data->philos[i].id = i + 1;
+		pthread_mutex_init(&data->philos[i].mutex_meal, NULL);	//protect
+		data->philos[i].finish = false;
 		i++;
 	}
 }
@@ -95,15 +100,13 @@ bool	init_mutex(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		if (!pthread_mutex_init(&data->forks[i], NULL))
+		if (pthread_mutex_init(&data->forks[i], NULL))
 			return (false);
 		i++;
 	}
-	if (!pthread_mutex_init(&data->mutex_meal, NULL))
+	if (pthread_mutex_init(&data->print, NULL))
 		return (false);
-	if (!pthread_mutex_init(&data->print, NULL))
-		return (false);
-	if (!pthread_mutex_init(&data->create, NULL))
+	if (pthread_mutex_init(&data->create, NULL))
 		return (false);
 	return (true);
 }
@@ -116,9 +119,9 @@ void	destroy_mutex(t_data *data)
 	while (i < data->nb_philo)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->philos[i].mutex_meal);
 		i++;
 	}
-	pthread_mutex_destroy(&data->mutex_meal);
 	pthread_mutex_destroy(&data->print);
 	pthread_mutex_destroy(&data->create);
 }
