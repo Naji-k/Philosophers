@@ -44,17 +44,35 @@ void	*routine(void *arg)
 
 bool	pickup_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->r_fork);
-	if (print_msg(philo, T_FORK))
+	if (philo->id % 2 == 0)
 	{
-		pthread_mutex_unlock(philo->r_fork);
-		return (false);
+		pthread_mutex_lock(philo->r_fork);
+		if (print_msg(philo, T_FORK))
+		{
+			pthread_mutex_unlock(philo->r_fork);
+			return (false);
+		}
+		pthread_mutex_lock(philo->l_fork);
+		if (print_msg(philo, T_FORK))
+		{
+			putdown_forks(philo);
+			return (false);
+		}
 	}
-	pthread_mutex_lock(philo->l_fork);
-	if (print_msg(philo, T_FORK))
+	else
 	{
-		putdown_forks(philo);
-		return (false);
+		pthread_mutex_lock(philo->l_fork);
+		if (print_msg(philo, T_FORK))
+		{
+			pthread_mutex_unlock(philo->l_fork);
+			return (false);
+		}
+		pthread_mutex_lock(philo->r_fork);
+		if (print_msg(philo, T_FORK))
+		{
+			putdown_forks(philo);
+			return (false);
+		}
 	}
 	return (true);
 }
@@ -81,8 +99,16 @@ bool	eat(t_philo *philo)
 
 void	putdown_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(philo->r_fork);
-	pthread_mutex_unlock(philo->l_fork);
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork);
+	}
+	else
+	{
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
+	}
 }
 
 bool	philo_sleep(t_philo *philo)
@@ -166,23 +192,3 @@ int	main(int argc, char **argv)
 	}
 	return (0);
 }
-
-/* 
-
-each time before print you have to lock mutex_print for each thread then print,
-after finish print, unlock mutex_print
-eating() {
-
-	pickup_forks()
-	start eat (print)
-	usleep(time_to_eat);
-	release_forks()
-
-}
-
-
-sleep{
-	usleep(time_to_sleep)
-	print();
-}
- */

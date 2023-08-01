@@ -70,7 +70,6 @@ void	ft_monitor(t_data *data)
 			data->dead = true;
 			pthread_mutex_unlock(&data->mutex_death);
 			printf("finish\n");
-			printf("Philo %d is died and eating %d\n", i, done_eating);
 			return ;
 		}
 	}
