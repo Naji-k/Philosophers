@@ -54,6 +54,9 @@ bool	valid_inputs(t_data *data, char **argv)
 		data->must_eat = ft_atoi(argv[5]);
 	else
 		data->must_eat = -1;
+	data->dead = false;
+	data->finished = false;
+	data->created_threads = 0;
 	if (data->nb_philo > MAX_PHILO || data->nb_philo <= 0 || data->eat_time <= 0
 		|| data->sleep_time <= 0 || data->death_time <= 0 || data->must_eat <
 		-1)

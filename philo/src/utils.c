@@ -40,12 +40,14 @@ void	ft_sleep(long long time)
 		usleep(300);
 }
 
-void	print_msg(t_philo *philo, char *msg)
+bool	print_msg(t_philo *philo, char *msg)
 {
 	long long p_time;
 
-	pthread_mutex_lock(&philo->data->print);
+	pthread_mutex_lock(&philo->data->mutex_death);
 	p_time = current_time() - philo->data->start_time;
-	printf("%lld %d %s\n", p_time, philo->id, msg);
-	pthread_mutex_unlock(&philo->data->print);
+	if (!philo->data->dead)
+		printf("%lld %d %s\n", p_time, philo->id, msg);
+	pthread_mutex_unlock(&philo->data->mutex_death);
+	return (philo->data->dead);
 }

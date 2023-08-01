@@ -57,7 +57,8 @@ typedef struct s_data
 	pthread_t		*thread_id;
 	int				nb_philo;
 	int				must_eat;
-	int				finished;
+	bool			finished;
+	bool			dead;
 	int				created_threads;
 	t_philo			*philos;
 	long long		death_time;
@@ -66,18 +67,18 @@ typedef struct s_data
 	long long		start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	create;
-	pthread_mutex_t	print;
+	pthread_mutex_t	mutex_death;
+	pthread_mutex_t	time;
 
 }					t_data;
 
 bool				check_inputs(int argc, char **argv, t_data *data);
 long				ft_atoi(const char *str);
 bool				valid_inputs(t_data *data, char **argv);
-int					ft_monitor(t_data *data);
-void				eat(t_philo *philo);
-void				pickup_forks(t_philo *philo);
+bool				eat(t_philo *philo);
+bool				pickup_forks(t_philo *philo);
 void				putdown_forks(t_philo *philo);
-void				philo_sleep(t_philo *philo);
+bool				philo_sleep(t_philo *philo);
 void				philo_think(t_philo *philo);
 //init
 int					allocate_memory(t_data *data);
@@ -91,7 +92,10 @@ void				destroy_mutex(t_data *data);
 void				destroy_free_all(t_data *data);
 long long			current_time(void);
 void				ft_sleep(long long time);
-void				print_msg(t_philo *philo, char *msg);
+bool				print_msg(t_philo *philo, char *msg);
+
+//monitor
+void				ft_monitor(t_data *data);
 #endif
 
 /* 

@@ -68,7 +68,7 @@ void	init_philo(t_data *data)
 			data->philos[i].meal_count = -1;
 		data->philos[i].data = data;
 		data->philos[i].id = i + 1;
-		pthread_mutex_init(&data->philos[i].mutex_meal, NULL);	//protect
+		pthread_mutex_init(&data->philos[i].mutex_meal, NULL); //protect
 		data->philos[i].finish = false;
 		i++;
 	}
@@ -82,13 +82,8 @@ void	init_forks(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		if (i == 0)
-		{
-			data->philos[i].l_fork = &data->forks[i];
-			data->philos[i].r_fork = &data->forks[data->nb_philo - 1];
-		}
 		data->philos[i].l_fork = &data->forks[i];
-		data->philos[i].r_fork = &data->forks[i - 1];
+		data->philos[i].r_fork = &data->forks[(i + 1) % data->nb_philo];
 		i++;
 	}
 }
@@ -104,16 +99,18 @@ bool	init_mutex(t_data *data)
 			return (false);
 		i++;
 	}
-	if (pthread_mutex_init(&data->print, NULL))
+	if (pthread_mutex_init(&data->mutex_death, NULL))
 		return (false);
 	if (pthread_mutex_init(&data->create, NULL))
+		return (false);
+	if (pthread_mutex_init(&data->time, NULL))
 		return (false);
 	return (true);
 }
 
 void	destroy_mutex(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->nb_philo)
@@ -122,6 +119,7 @@ void	destroy_mutex(t_data *data)
 		pthread_mutex_destroy(&data->philos[i].mutex_meal);
 		i++;
 	}
-	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->mutex_death);
 	pthread_mutex_destroy(&data->create);
+	pthread_mutex_destroy(&data->time);
 }
