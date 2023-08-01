@@ -29,7 +29,7 @@ void	*routine(void *arg)
 	pthread_mutex_lock(&philo->data->create);
 	pthread_mutex_unlock(&philo->data->create);
 	if (philo->id % 2 == 0)
-		usleep(300);
+		usleep(50);
 	while (1)
 	{
 		if (print_msg(philo, THINKING))
@@ -61,7 +61,6 @@ bool	pickup_forks(t_philo *philo)
 
 bool	eat(t_philo *philo)
 {
-	// philo->status = EAT;
 	if (!pickup_forks(philo))
 		return (false);
 	if (print_msg(philo, EATING))
@@ -88,8 +87,7 @@ void	putdown_forks(t_philo *philo)
 
 bool	philo_sleep(t_philo *philo)
 {
-	// philo->status = SLEEP;
-	if (!print_msg(philo, SLEEPING))
+	if (print_msg(philo, SLEEPING))
 		return (false);
 	ft_sleep(philo->data->sleep_time);
 	return (true);
@@ -97,7 +95,6 @@ bool	philo_sleep(t_philo *philo)
 
 void	philo_think(t_philo *philo)
 {
-	// philo->status = THINK;
 	print_msg(philo, THINKING);
 }
 bool	thread_checker(t_data *data)

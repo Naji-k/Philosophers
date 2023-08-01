@@ -31,19 +31,12 @@ struct s_data;
 # define THINKING "is thinking"
 # define DIED "died"
 
-typedef enum s_ph_status
-{
-	EAT,
-	THINK,
-	SLEEP,
-	DIE,
-}					t_ph_status;
+
 
 typedef struct s_philo
 {
 	struct s_data	*data;
 	int				id;
-	t_ph_status		status;
 	int				meal_count;
 	bool			finish;
 	long long		last_meal_time;
