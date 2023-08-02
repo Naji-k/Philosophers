@@ -24,7 +24,8 @@ int	init(t_data *data)
 		printf("error init_mutexes\n");
 		return (1);
 	}
-	init_philo(data);
+	if (init_philo(data))
+		return (1);
 	init_forks(data);
 	return (0);
 }
@@ -55,7 +56,7 @@ int	allocate_memory(t_data *data)
 	return (0);
 }
 
-void	init_philo(t_data *data)
+int	init_philo(t_data *data)
 {
 	int	i;
 
@@ -68,10 +69,12 @@ void	init_philo(t_data *data)
 			data->philos[i].meal_count = -1;
 		data->philos[i].data = data;
 		data->philos[i].id = i + 1;
-		pthread_mutex_init(&data->philos[i].mutex_meal, NULL); //protect
+		if (pthread_mutex_init(&data->philos[i].mutex_meal, NULL))
+			return (1);
 		data->philos[i].finish = false;
 		i++;
 	}
+	return (0);
 }
 
 //this function to initialize forks for each philosopher ex: L_fork, R_fork
@@ -106,20 +109,4 @@ bool	init_mutex(t_data *data)
 	if (pthread_mutex_init(&data->time, NULL))
 		return (false);
 	return (true);
-}
-
-void	destroy_mutex(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->nb_philo)
-	{
-		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->philos[i].mutex_meal);
-		i++;
-	}
-	pthread_mutex_destroy(&data->mutex_death);
-	pthread_mutex_destroy(&data->create);
-	pthread_mutex_destroy(&data->time);
 }

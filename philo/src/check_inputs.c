@@ -28,6 +28,7 @@ int	ft_is_all_digit(char *str)
 	}
 	return (0);
 }
+
 bool	check_inputs(int argc, char **argv, t_data *data)
 {
 	while ((argc - 1) > 1)
@@ -58,8 +59,8 @@ bool	valid_inputs(t_data *data, char **argv)
 	data->finished = false;
 	data->created_threads = 0;
 	if (data->nb_philo > MAX_PHILO || data->nb_philo <= 0 || data->eat_time <= 0
-		|| data->sleep_time <= 0 || data->death_time <= 0 || data->must_eat <
-		-1)
+		|| data->sleep_time <= 0 || data->death_time <= 0 || data->must_eat \
+		< -1)
 		return (false);
 	return (true);
 }

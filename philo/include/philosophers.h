@@ -21,17 +21,15 @@
 # include <time.h>
 # include <unistd.h>
 
-struct s_data;
-
 # define MAX_PHILO 200
+
 //printing msgs
 # define T_FORK "has taken a fork"
 # define EATING "is eating"
 # define SLEEPING "is sleeping"
 # define THINKING "is thinking"
-# define DIED "died"
-
-
+# define DIED "is died"
+# define FINISH "finish"
 
 typedef struct s_philo
 {
@@ -65,24 +63,29 @@ typedef struct s_data
 
 }					t_data;
 
-bool				check_inputs(int argc, char **argv, t_data *data);
 long				ft_atoi(const char *str);
+
+//check_inputs
+int					ft_is_all_digit(char *str);
+bool				check_inputs(int argc, char **argv, t_data *data);
 bool				valid_inputs(t_data *data, char **argv);
+
+//actions
 bool				eat(t_philo *philo);
 bool				pickup_forks(t_philo *philo);
 void				putdown_forks(t_philo *philo);
 bool				philo_sleep(t_philo *philo);
-void				philo_think(t_philo *philo);
+
 //init
 int					allocate_memory(t_data *data);
 int					init(t_data *data);
-void				init_philo(t_data *data);
+int					init_philo(t_data *data);
 void				init_forks(t_data *data);
 bool				init_mutex(t_data *data);
 void				destroy_mutex(t_data *data);
 
 //utils
-void				destroy_free_all(t_data *data);
+void				destroy_free_all(t_data *data, int i);
 long long			current_time(void);
 void				ft_sleep(long long time);
 bool				print_msg(t_philo *philo, char *msg);

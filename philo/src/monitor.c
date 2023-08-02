@@ -12,16 +12,17 @@
 
 #include "philosophers.h"
 
-void	print_death_msg(t_data *data, int i, int done)
+void	print_death_msg(t_data *data, int i, char *msg)
 {
 	long long	p_time;
 
 	pthread_mutex_lock(&data->mutex_death);
 	p_time = current_time() - data->start_time;
 	data->dead = true;
-	printf("%lld %d is died\t %d\n", p_time, i, done);
+	printf("%lld %d %s\n", p_time, i, msg);
 	pthread_mutex_unlock(&data->mutex_death);
 }
+
 void	meal_counter(t_data *data, int i, int *done_eating)
 {
 	pthread_mutex_lock(&data->philos[i].mutex_meal);
@@ -29,6 +30,7 @@ void	meal_counter(t_data *data, int i, int *done_eating)
 		*done_eating += 1;
 	pthread_mutex_unlock(&data->philos[i].mutex_meal);
 }
+
 bool	death_checker(t_data *data, int i)
 {
 	long long	time_since_eat;
@@ -39,14 +41,10 @@ bool	death_checker(t_data *data, int i)
 	time_since_eat = now - data->philos[i].last_meal_time;
 	pthread_mutex_unlock(&data->time);
 	if (time_since_eat > data->death_time)
-	{
-		pthread_mutex_lock(&data->mutex_death);
-		data->dead = true;
-		pthread_mutex_unlock(&data->mutex_death);
 		return (true);
-	}
 	return (false);
 }
+
 void	ft_monitor(t_data *data)
 {
 	int	i;
@@ -61,7 +59,7 @@ void	ft_monitor(t_data *data)
 			if (data->must_eat > 0)
 				meal_counter(data, i, &done_eating);
 			if (death_checker(data, i) == true)
-				return (print_death_msg(data, i, done_eating));
+				return (print_death_msg(data, i, DIED));
 			i++;
 		}
 		if (done_eating == data->nb_philo)
