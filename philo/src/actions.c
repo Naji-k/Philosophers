@@ -31,8 +31,8 @@ bool	pickup_forks(t_philo *philo)
 
 void	putdown_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
 }
 
 bool	eat(t_philo *philo)

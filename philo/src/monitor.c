@@ -23,12 +23,16 @@ void	print_death_msg(t_data *data, int i, char *msg)
 	pthread_mutex_unlock(&data->mutex_death);
 }
 
-void	meal_counter(t_data *data, int i, int *done_eating)
+int	meal_counter(t_data *data, int i)
 {
 	pthread_mutex_lock(&data->philos[i].mutex_meal);
-	if (data->philos[i].meal_count == 0)
-		*done_eating += 1;
+	if (data->philos[i].meal_count <= 0)
+	{
+		pthread_mutex_unlock(&data->philos[i].mutex_meal);
+		return (1);
+	}
 	pthread_mutex_unlock(&data->philos[i].mutex_meal);
+	return (0);
 }
 
 bool	death_checker(t_data *data, int i)
@@ -45,6 +49,26 @@ bool	death_checker(t_data *data, int i)
 	return (false);
 }
 
+bool	death_status(t_data *data, int check)
+{
+	bool	status;
+
+	if (check == 0)
+	{
+		pthread_mutex_lock(&data->mutex_death);
+		status = data->dead;
+		pthread_mutex_unlock(&data->mutex_death);
+	}
+	else
+	{
+		pthread_mutex_lock(&data->mutex_death);
+		data->dead = true;
+		status = data->dead;
+		pthread_mutex_unlock(&data->mutex_death);
+	}
+	return (status);
+}
+
 void	ft_monitor(t_data *data)
 {
 	int	i;
@@ -57,18 +81,16 @@ void	ft_monitor(t_data *data)
 		while (i < data->nb_philo)
 		{
 			if (data->must_eat > 0)
-				meal_counter(data, i, &done_eating);
+				done_eating += meal_counter(data, i);
+			if (done_eating == data->nb_philo)
+			{
+				death_status(data, 1);
+				printf("finish\n");
+				return ;
+			}
 			if (death_checker(data, i) == true)
 				return (print_death_msg(data, i, DIED));
 			i++;
-		}
-		if (done_eating == data->nb_philo)
-		{
-			pthread_mutex_lock(&data->mutex_death);
-			data->dead = true;
-			pthread_mutex_unlock(&data->mutex_death);
-			printf("finish\n");
-			return ;
 		}
 	}
 	return ;

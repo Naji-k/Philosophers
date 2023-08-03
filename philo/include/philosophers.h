@@ -65,6 +65,11 @@ typedef struct s_data
 
 long				ft_atoi(const char *str);
 
+//pthreads
+int					create_threads(t_data *data);
+int					join_thread(t_data *data);
+bool				thread_checker(t_data *data);
+void				*routine(void *arg);
 //check_inputs
 int					ft_is_all_digit(char *str);
 bool				check_inputs(int argc, char **argv, t_data *data);
@@ -92,6 +97,10 @@ bool				print_msg(t_philo *philo, char *msg);
 
 //monitor
 void				ft_monitor(t_data *data);
+int					meal_counter(t_data *data, int i);
+void				print_death_msg(t_data *data, int i, char *msg);
+bool				death_checker(t_data *data, int i);
+bool				death_status(t_data *data, int check);
 #endif
 
 /* 
