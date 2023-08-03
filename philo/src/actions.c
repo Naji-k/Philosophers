@@ -14,13 +14,13 @@
 
 bool	pickup_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->l_fork);
+	pthread_mutex_lock(philo->r_fork);
 	if (print_msg(philo, T_FORK))
 	{
-		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
 		return (false);
 	}
-	pthread_mutex_lock(philo->r_fork);
+	pthread_mutex_lock(philo->l_fork);
 	if (print_msg(philo, T_FORK))
 	{
 		putdown_forks(philo);

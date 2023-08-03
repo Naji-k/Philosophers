@@ -85,8 +85,16 @@ void	init_forks(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		data->philos[i].l_fork = &data->forks[i];
-		data->philos[i].r_fork = &data->forks[(i + 1) % data->nb_philo];
+		// if (i == (data->nb_philo - 1))
+		// {
+		// 	data->philos[i].r_fork = &data->forks[0];
+		// 	data->philos[i].l_fork = &data->forks[i];
+		// }
+		// else
+		// {
+			data->philos[i].r_fork = &data->forks[i];
+			data->philos[i].l_fork = &data->forks[(i + 1) % data->nb_philo];
+		// }
 		i++;
 	}
 }
