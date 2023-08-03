@@ -12,10 +12,15 @@
 
 #include "philosophers.h"
 
+void	check_leaks(void)
+{
+	system("leaks -q philo");
+}
 int	main(int argc, char **argv)
 {
 	t_data	data;
 
+	// atexit(check_leaks);
 	if (argc < 5 || check_inputs(argc, argv, &data) == false)
 	{
 		printf("invalid inputs\n");
@@ -23,6 +28,7 @@ int	main(int argc, char **argv)
 	}
 	else
 	{
+		
 		if (init(&data) == 1)
 		{
 			destroy_free_all(&data, 1);

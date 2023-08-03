@@ -49,7 +49,7 @@ int	create_threads(t_data *data)
 
 	i = 0;
 	pthread_mutex_lock(&data->create);
-	while (i < 10)
+	while (i < data->nb_philo)
 	{
 		pthread_mutex_lock(&data->time);
 		data->philos[i].last_meal_time = current_time();
