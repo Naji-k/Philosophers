@@ -12,7 +12,7 @@
 
 #include "philosophers.h"
 
-void	destroy_free_all(t_data *data, int i)
+void	free_all_destroy(t_data *data, bool destroy, int forks, int meals)
 {
 	if (data->thread_id)
 		free(data->thread_id);
@@ -20,23 +20,29 @@ void	destroy_free_all(t_data *data, int i)
 		free(data->philos);
 	if (data->forks)
 		free(data->forks);
-	if (i == 1)
-		destroy_mutex(data);
+	if (destroy == true)
+		destroy_mutex(data, forks, meals);
 }
 
-void	destroy_mutex(t_data *data)
+void	destroy_mutex(t_data *data, int forks, int meals)
 {
 	int	i;
 
 	i = 0;
-	while (i < data->nb_philo)
+	while (i < forks)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	i = 0;
+	while (i < meals)
+	{
 		pthread_mutex_destroy(&data->philos[i].mutex_meal);
 		i++;
 	}
+	pthread_mutex_destroy(&data->forks[i]);
 	pthread_mutex_destroy(&data->mutex_death);
-	pthread_mutex_destroy(&data->create);
+	pthread_mutex_destroy(&data->mutex_create);
 	pthread_mutex_destroy(&data->time);
 }
 

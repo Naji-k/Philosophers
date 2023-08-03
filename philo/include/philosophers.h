@@ -57,7 +57,7 @@ typedef struct s_data
 	long long		sleep_time;
 	long long		start_time;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	create;
+	pthread_mutex_t	mutex_create;
 	pthread_mutex_t	mutex_death;
 	pthread_mutex_t	time;
 
@@ -87,10 +87,11 @@ int					init(t_data *data);
 int					init_philo(t_data *data);
 void				init_forks(t_data *data);
 bool				init_mutex(t_data *data);
-void				destroy_mutex(t_data *data);
+void				destroy_mutex(t_data *data, int forks, int meals);
 
 //utils
-void				destroy_free_all(t_data *data, int i);
+void				free_all_destroy(t_data *data, bool destroy, int forks,
+						int meals);
 long long			current_time(void);
 void				ft_sleep(long long time);
 bool				print_msg(t_philo *philo, char *msg);

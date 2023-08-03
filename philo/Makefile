@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	:= philo
-CFLAGS	:= -Wall -Wextra -Werror #-g -fsanitize=thread 
+CFLAGS	:= -Wall -Wextra -Werror -g -fsanitize=thread 
 
 #Directories
 OBJ_DIR	:= obj

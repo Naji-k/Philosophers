@@ -17,8 +17,8 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	pthread_mutex_lock(&philo->data->create);
-	pthread_mutex_unlock(&philo->data->create);
+	pthread_mutex_lock(&philo->data->mutex_create);
+	pthread_mutex_unlock(&philo->data->mutex_create);
 	if (philo->id % 2 == 0)
 		usleep(50);
 	while (1)
@@ -48,7 +48,7 @@ int	create_threads(t_data *data)
 	int	i;
 
 	i = 0;
-	pthread_mutex_lock(&data->create);
+	pthread_mutex_lock(&data->mutex_create);
 	while (i < data->nb_philo)
 	{
 		pthread_mutex_lock(&data->time);
@@ -62,12 +62,12 @@ int	create_threads(t_data *data)
 	}
 	if (thread_checker(data) == false)
 	{
-		pthread_mutex_unlock(&data->create);
+		pthread_mutex_unlock(&data->mutex_create);
 		printf("error thread_checker\n");
 		return (1);
 	}
 	data->start_time = current_time();
-	pthread_mutex_unlock(&data->create);
+	pthread_mutex_unlock(&data->mutex_create);
 	return (0);
 }
 

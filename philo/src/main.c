@@ -16,11 +16,11 @@ void	check_leaks(void)
 {
 	system("leaks -q philo");
 }
+
 int	main(int argc, char **argv)
 {
 	t_data	data;
 
-	// atexit(check_leaks);
 	if (argc < 5 || check_inputs(argc, argv, &data) == false)
 	{
 		printf("invalid inputs\n");
@@ -28,16 +28,15 @@ int	main(int argc, char **argv)
 	}
 	else
 	{
-		
 		if (init(&data) == 1)
 		{
-			destroy_free_all(&data, 1);
 			return (1);
 		}
 		if (create_threads(&data) == 0)
 			ft_monitor(&data);
 		join_thread(&data);
-		destroy_free_all(&data, 1);
+		free_all_destroy(&data, true, data.created_threads,
+			data.created_threads);
 	}
 	return (0);
 }
