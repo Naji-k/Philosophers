@@ -20,7 +20,7 @@ void	*routine(void *arg)
 	pthread_mutex_lock(&philo->data->mutex_create);
 	pthread_mutex_unlock(&philo->data->mutex_create);
 	if (philo->id % 2 == 0)
-		usleep(50);
+		ft_sleep(50);
 	while (1)
 	{
 		if (print_msg(philo, THINKING))

@@ -35,7 +35,7 @@ int	init(t_data *data)
 }
 
 int	allocate_memory(t_data *data)
-{
+{//should free properly (free all array)
 	data->thread_id = malloc(sizeof(pthread_t) * data->nb_philo);
 	if (!data->thread_id)
 	{
