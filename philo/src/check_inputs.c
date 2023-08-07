@@ -11,23 +11,15 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-//check inputs if there is any characters
-
-int	ft_is_all_digit(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] >= '0' && str[i] <= '9')
-			i++;
-		else
-			return (1);
-	}
-	return (0);
-}
+/**
+ * @brief 1st func to check if the inputs are valid,
+ * if inputs are valid, run valid_inputs (to convert from char to int)
+ * @param argc 
+ * @param argv 
+ * @param data 
+ * @return true 
+ * @return false 
+ */
 
 bool	check_inputs(int argc, char **argv, t_data *data)
 {
@@ -44,6 +36,35 @@ bool	check_inputs(int argc, char **argv, t_data *data)
 		return (false);
 	return (true);
 }
+/**
+ * @brief if all is digit in one arg
+ * 
+ * @param str one arg
+ * @return int 0 success, 1 fails
+ */
+
+int	ft_is_all_digit(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] >= '0' && str[i] <= '9')
+			i++;
+		else
+			return (1);
+	}
+	return (0);
+}
+/**
+ * @brief convert all args to long
+ * check if the inputs is valid: non of them < 0, 
+ * @param data 
+ * @param argv 
+ * @return true all args are valid
+ * @return false one of args not valid
+ */
 
 bool	valid_inputs(t_data *data, char **argv)
 {

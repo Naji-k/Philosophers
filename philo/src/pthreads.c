@@ -32,6 +32,13 @@ void	*routine(void *arg)
 	}
 	return (NULL);
 }
+/**
+ * @brief to check if created_threads == number_of_philos
+ * 
+ * @param data 
+ * @return true 
+ * @return false 
+ */
 
 bool	thread_checker(t_data *data)
 {

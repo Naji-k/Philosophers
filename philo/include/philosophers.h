@@ -70,6 +70,7 @@ int					create_threads(t_data *data);
 int					join_thread(t_data *data);
 bool				thread_checker(t_data *data);
 void				*routine(void *arg);
+
 //check_inputs
 int					ft_is_all_digit(char *str);
 bool				check_inputs(int argc, char **argv, t_data *data);

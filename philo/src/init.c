@@ -35,7 +35,7 @@ int	init(t_data *data)
 }
 
 int	allocate_memory(t_data *data)
-{//should free properly (free all array)
+{
 	data->thread_id = malloc(sizeof(pthread_t) * data->nb_philo);
 	if (!data->thread_id)
 	{
@@ -59,6 +59,13 @@ int	allocate_memory(t_data *data)
 	}
 	return (0);
 }
+/**
+ * @brief init the philos and give them the values for meal_count
+ * init_mutex_meal_count
+ * 
+ * @param data 
+ * @return int if success (0), otherwise return(1);
+ */
 
 int	init_philo(t_data *data)
 {
@@ -84,7 +91,11 @@ int	init_philo(t_data *data)
 	return (0);
 }
 
-//this function to initialize forks for each philosopher ex: L_fork, R_fork
+/**
+ * @brief to initialize L-forks, and R-forks for each philo
+ * 
+ * @param data the all data that holds the *forks and *philo,
+ */
 void	init_forks(t_data *data)
 {
 	int	i;
@@ -105,6 +116,13 @@ void	init_forks(t_data *data)
 		i++;
 	}
 }
+/**
+ * @brief to init_mutexes, in the data
+ * if one of them failed to init, destroy the pre-init-mutex
+ * @param data 
+ * @return true if everything works well
+ * @return false if fails to init
+ */
 
 bool	init_mutex(t_data *data)
 {

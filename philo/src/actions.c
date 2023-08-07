@@ -11,6 +11,13 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+/**
+ * @brief pickup the low id fork first and check if one of philo dies or not
+ * 
+ * @param philo 
+ * @return true 
+ * @return false if philo die drop the fork
+ */
 
 bool	pickup_forks(t_philo *philo)
 {

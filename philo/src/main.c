@@ -16,6 +16,16 @@ void	check_leaks(void)
 {
 	system("leaks -q philo");
 }
+/**
+ * @brief this is the main func in Philo
+ * 1st check if the inputs are valid, then convert them to long,
+ * 2nd init (allocate memory, init_mutexes, init_forks...)
+ * create threads (if created successfully run the ft_monitor,
+ * otherwise join(created_threads) and destroy
+ * @param argc 
+ * @param argv 
+ * @return int 
+ */
 
 int	main(int argc, char **argv)
 {
