@@ -23,7 +23,7 @@
 
 bool	check_inputs(int argc, char **argv, t_data *data)
 {
-	while ((argc - 1) > 1)
+	while ((argc - 1) > 0)
 	{
 		if (ft_is_all_digit(argv[argc - 1]) != 0)
 		{
