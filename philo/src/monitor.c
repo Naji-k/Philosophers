@@ -106,7 +106,6 @@ void	ft_monitor(t_data *data)
 			if (done_eating == data->nb_philo)
 			{
 				death_status(data, 1);
-				printf("finish\n");
 				return ;
 			}
 			if (death_checker(data, i) == true)
