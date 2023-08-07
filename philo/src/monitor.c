@@ -19,7 +19,7 @@ void	print_death_msg(t_data *data, int i, char *msg)
 	pthread_mutex_lock(&data->mutex_death);
 	p_time = current_time() - data->start_time;
 	data->dead = true;
-	printf("%lld %d %s\n", p_time, i, msg);
+	printf("%lld %d %s\n", p_time, data->philos[i].id, msg);
 	pthread_mutex_unlock(&data->mutex_death);
 }
 /**

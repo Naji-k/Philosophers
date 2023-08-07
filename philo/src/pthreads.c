@@ -12,6 +12,16 @@
 
 #include "philosophers.h"
 
+void	one_philo(t_philo *philo)
+{
+	pthread_mutex_lock(philo->r_fork);
+	if (print_msg(philo, T_FORK))
+	{
+		pthread_mutex_unlock(philo->r_fork);
+		return ;
+	}
+}
+
 void	*routine(void *arg)
 {
 	t_philo	*philo;
@@ -21,6 +31,11 @@ void	*routine(void *arg)
 	pthread_mutex_unlock(&philo->data->mutex_create);
 	if (philo->id % 2 == 0)
 		ft_sleep(50);
+	if (philo->data->nb_philo == 1)
+	{
+		one_philo(philo);
+		return (NULL);
+	}
 	while (1)
 	{
 		if (print_msg(philo, THINKING))
