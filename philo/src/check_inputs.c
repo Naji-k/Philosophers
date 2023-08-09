@@ -73,14 +73,18 @@ bool	valid_inputs(t_data *data, char **argv)
 	data->eat_time = ft_atoi(argv[3]);
 	data->sleep_time = ft_atoi(argv[4]);
 	if (argv[5] != NULL)
+	{
 		data->must_eat = ft_atoi(argv[5]);
+		if (data->must_eat == 0)
+			data->must_eat = -2;
+	}
 	else
 		data->must_eat = -1;
 	data->dead = false;
 	data->finished = false;
 	data->created_threads = 0;
 	if (data->nb_philo > MAX_PHILO || data->nb_philo <= 0 || data->eat_time <= 0
-		|| data->sleep_time <= 0 || data->death_time <= 0 || data->must_eat \
+		|| data->sleep_time <= 0 || data->death_time <= 0 || data->must_eat 
 		< -1)
 		return (false);
 	return (true);

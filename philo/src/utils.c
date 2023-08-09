@@ -14,14 +14,14 @@
 
 void	free_all_destroy(t_data *data, bool destroy, int forks, int meals)
 {
+	if (destroy == true)
+		destroy_mutex(data, forks, meals);
 	if (data->thread_id)
 		free(data->thread_id);
 	if (data->philos)
 		free(data->philos);
 	if (data->forks)
 		free(data->forks);
-	if (destroy == true)
-		destroy_mutex(data, forks, meals);
 }
 
 void	destroy_mutex(t_data *data, int forks, int meals)
@@ -40,7 +40,6 @@ void	destroy_mutex(t_data *data, int forks, int meals)
 		pthread_mutex_destroy(&data->philos[i].mutex_meal);
 		i++;
 	}
-	pthread_mutex_destroy(&data->forks[i]);
 	pthread_mutex_destroy(&data->mutex_death);
 	pthread_mutex_destroy(&data->mutex_create);
 	pthread_mutex_destroy(&data->time);

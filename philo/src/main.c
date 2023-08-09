@@ -45,8 +45,8 @@ int	main(int argc, char **argv)
 		if (create_threads(&data) == 0)
 			ft_monitor(&data);
 		join_thread(&data);
-		free_all_destroy(&data, true, data.created_threads,
-			data.created_threads);
+		free_all_destroy(&data, true, data.nb_philo,
+			data.nb_philo);
 	}
 	return (0);
 }
